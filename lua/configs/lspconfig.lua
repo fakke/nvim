@@ -1,6 +1,6 @@
 require("nvchad.configs.lspconfig").defaults()
 
-local servers = { "html", "cssls" }
+local servers = { "html", "cssls", "pyright", "make" }
 vim.lsp.enable(servers)
 
 -- read :h vim.lsp.config for changing options of lsp servers
@@ -13,6 +13,20 @@ vim.lsp.config.gopls = {
     gopls = {
       analyses = { unusedparams = true },
       staticcheck = true,
+    },
+  },
+}
+
+vim.lsp.config.pyright = {
+  cmd = { "pyright-langserver", "--stdio" },
+  filetypes = { "python" },
+  root_dir = require("lspconfig.util").root_pattern(".git", "setup.py", "pyproject.toml"),
+  settings = {
+    python = {
+      analysis = {
+        typeCheckingMode = "basic",
+        diagnosticMode = "openFilesOnly",
+      },
     },
   },
 }
