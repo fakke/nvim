@@ -7,9 +7,14 @@ local options = {
     go = { "goimports" },
   },
 
+  default_format_opts = {
+    timeout_ms = 3000,
+    lsp_fallback = true,
+  },
+
   format_on_save = {
     -- These options will be passed to conform.format()
-    timeout_ms = 500,
+    timeout_ms = 3000,
     lsp_fallback = true,
   },
 }
