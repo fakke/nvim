@@ -22,3 +22,5 @@ map("n", "<leader>X", function()
   end
   vim.cmd 'normal`"'
 end, { desc = "buffer close others" })
+
+map("t", "<C-q>", [[<C-\><C-n>]], { desc = "Exit terminal mode" })
