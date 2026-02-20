@@ -1,10 +1,11 @@
-local options = require("nvchad.configs.treesitter").opts
-
-options.ensure_installed = options.ensure_installed or {}
-vim.list_extend(options.ensure_installed, {
-  "go",
-  "gomod",
-  "python",
-})
-
-return options
+require("nvim-treesitter.configs").setup {
+  ensure_installed = {
+    "go",
+    "gomod",
+    "python",
+  },
+  highlight = {
+    enable = true,
+    additional_vim_regex_highlighting = false,
+  },
+}
