@@ -1,4 +1,5 @@
 require "nvchad.mappings"
+require("configs.make").setup_mappings()
 
 -- add yours here
 
