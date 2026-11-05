@@ -20,6 +20,15 @@ return {
     end,
   },
 
+  {
+    "WhoIsSethDaniel/mason-tool-installer.nvim",
+    lazy = false,
+    dependencies = { "mason-org/mason.nvim" },
+    opts = function()
+      return require "configs.mason"
+    end,
+  },
+
   -- test new blink
   -- { import = "nvchad.blink.lazyspec" },
 

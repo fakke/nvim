@@ -1,10 +1,17 @@
-local options = require("nvchad.configs.mason").opts
-
-vim.list_extend(options.ensure_installed, {
-  "gopls",
-  "goimports",
-  "pyright",
-  "black",
-})
-
-return options
+return {
+  ensure_installed = {
+    "autotools-language-server",
+    "black",
+    "clangd",
+    "codelldb",
+    "css-lsp",
+    "goimports",
+    "gopls",
+    "html-lsp",
+    "lua-language-server",
+    "pyright",
+    "stylua",
+  },
+  run_on_start = true,
+  auto_update = false,
+}
