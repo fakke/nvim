@@ -1,3 +1,11 @@
+local function can_build_parsers()
+  local has = vim.fn.executable
+  return has "tree-sitter" == 1
+    and (has "cc" == 1 or has "gcc" == 1 or has "clang" == 1)
+    and has "curl" == 1
+    and has "tar" == 1
+end
+
 return {
   {
     "stevearc/conform.nvim",
@@ -16,14 +24,20 @@ return {
   {
     "nvim-treesitter/nvim-treesitter",
     lazy = false,
-    build = ":TSUpdate",
+    build = function()
+      if can_build_parsers() then
+        vim.cmd "TSUpdate"
+      end
+    end,
     opts = function()
       return require "configs.treesitter"
     end,
     config = function(_, opts)
       local treesitter = require "nvim-treesitter"
       treesitter.setup {}
-      treesitter.install(opts.ensure_installed)
+      if can_build_parsers() then
+        treesitter.install(opts.ensure_installed)
+      end
     end,
   },
 
