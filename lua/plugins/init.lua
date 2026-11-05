@@ -15,8 +15,15 @@ return {
 
   {
     "nvim-treesitter/nvim-treesitter",
+    lazy = false,
+    build = ":TSUpdate",
     opts = function()
       return require "configs.treesitter"
+    end,
+    config = function(_, opts)
+      local treesitter = require "nvim-treesitter"
+      treesitter.setup {}
+      treesitter.install(opts.ensure_installed)
     end,
   },
 

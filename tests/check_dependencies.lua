@@ -3,15 +3,40 @@ local ok, err = xpcall(function()
   vim.opt.runtimepath:append(vim.fn.getcwd())
   vim.opt.runtimepath:append(plugin)
 
+  package.preload["nvchad.configs.treesitter"] = function()
+    return { ensure_installed = { "lua", "luadoc", "printf", "vim", "vimdoc" } }
+  end
+
+  local parser_setup = false
+  local parsers
+  package.preload["nvim-treesitter"] = function()
+    return {
+      setup = function()
+        parser_setup = true
+      end,
+      install = function(languages)
+        assert(parser_setup)
+        parsers = languages
+      end,
+    }
+  end
+
+  local specs = require "plugins"
   local installer
-  for _, spec in ipairs(require "plugins") do
-    if spec[1] == "WhoIsSethDaniel/mason-tool-installer.nvim" then
+  for _, spec in ipairs(specs) do
+    if spec[1] == "nvim-treesitter/nvim-treesitter" then
+      assert(spec.lazy == false, "Parser setup must run on startup")
+      spec.config(spec, spec.opts())
+    elseif spec[1] == "WhoIsSethDaniel/mason-tool-installer.nvim" then
       assert(spec.lazy == false, "Mason installer must load before VimEnter")
       assert(vim.tbl_contains(spec.dependencies, "mason-org/mason.nvim"))
       installer = spec.opts()
     end
   end
   assert(installer and installer.run_on_start and not installer.auto_update)
+  for _, language in ipairs { "lua", "python", "go", "gomod", "html", "css", "c", "cpp", "make" } do
+    assert(vim.tbl_contains(parsers, language), "Missing parser: " .. language)
+  end
 
   local installed = { stylua = true }
   local attempts = {}
@@ -97,7 +122,7 @@ local ok, err = xpcall(function()
     assert(root and vim.uv.fs_realpath(root) == vim.uv.fs_realpath(project), "Incorrect root callback for " .. server)
   end
   vim.fn.delete(project, "rf")
-  print "PASS startup tool installation, retry, reuse, and LSP activation"
+  print "PASS startup installation, retry, installed-tool reuse, parsers, and LSP activation"
 end, debug.traceback)
 if not ok then
   print(err)
