@@ -8,6 +8,8 @@ local ok, err = xpcall(function()
     enabled = servers
   end
   require "configs.lspconfig"
+  assert(vim.tbl_contains(enabled, "gopls") and vim.tbl_contains(enabled, "autotools_ls"))
+  assert(not vim.tbl_contains(enabled, "make"))
   local project = vim.fn.tempname()
   vim.fn.mkdir(project)
   vim.fn.writefile({}, project .. "/go.mod")
@@ -22,7 +24,7 @@ local ok, err = xpcall(function()
     assert(root and vim.uv.fs_realpath(root) == vim.uv.fs_realpath(project), "Incorrect root callback for " .. server)
   end
   vim.fn.delete(project, "rf")
-  print "PASS native LSP root callbacks"
+  print "PASS native LSP roots and server activation"
 end, debug.traceback)
 if not ok then
   print(err)
