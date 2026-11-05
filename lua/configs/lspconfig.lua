@@ -1,14 +1,15 @@
 require("nvchad.configs.lspconfig").defaults()
 
 local servers = { "html", "cssls", "pyright", "make", "clangd" }
-vim.lsp.enable(servers)
 
 -- read :h vim.lsp.config for changing options of lsp servers
 
 vim.lsp.config.gopls = {
   cmd = { "gopls" },
   filetypes = { "go", "gomod" },
-  root_dir = require("lspconfig.util").root_pattern("go.mod", ".git"),
+  root_dir = function(bufnr, on_dir)
+    on_dir(vim.fs.root(bufnr, { "go.mod", ".git" }))
+  end,
   settings = {
     gopls = {
       analyses = { unusedparams = true },
@@ -20,7 +21,9 @@ vim.lsp.config.gopls = {
 vim.lsp.config.pyright = {
   cmd = { "pyright-langserver", "--stdio" },
   filetypes = { "python" },
-  root_dir = require("lspconfig.util").root_pattern(".git", "setup.py", "pyproject.toml"),
+  root_dir = function(bufnr, on_dir)
+    on_dir(vim.fs.root(bufnr, { ".git", "setup.py", "pyproject.toml" }))
+  end,
   settings = {
     python = {
       analysis = {
@@ -30,3 +33,5 @@ vim.lsp.config.pyright = {
     },
   },
 }
+
+vim.lsp.enable(servers)
