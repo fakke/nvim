@@ -31,6 +31,10 @@ function M.terminal()
 end
 
 function M.terminal_ready()
+  if vim.fn.executable "python3" ~= 1 then
+    vim.notify("Application runs require python3", vim.log.levels.WARN)
+    return false
+  end
   if not vim.env.TMUX or not vim.env.TMUX_PANE then
     vim.notify("Application runs require Neovim inside tmux", vim.log.levels.ERROR)
     return false
@@ -39,13 +43,17 @@ function M.terminal_ready()
 end
 
 function M.ready(cwd, current_task)
+  if vim.fn.executable "make" ~= 1 then
+    vim.notify("Build tasks require make", vim.log.levels.WARN)
+    return false
+  end
   for _, task in ipairs(require("overseer").list_tasks {}) do
     if task ~= current_task and task.cwd == cwd and task:is_running() then
       vim.notify("A task is already running in " .. cwd, vim.log.levels.WARN)
       return false
     end
   end
-  if vim.env.TMUX then
+  if vim.env.TMUX and vim.fn.executable "python3" == 1 then
     local terminal = M.terminal()
     local cmd = { terminal.command, terminal.args[1], "--owner", vim.env.TMUX_PANE, "--check" }
     local result = vim.system(cmd, { text = true }):wait()
