@@ -1,5 +1,6 @@
 return {
   "mfussenegger/nvim-dap",
+  cond = require("configs.languages").c.enabled,
   dependencies = {
     "stevearc/overseer.nvim",
     "mason-org/mason.nvim",
